@@ -32,6 +32,7 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
      */
     Integer contador = 0;
     Integer contadorTotal = 0;
+    Integer contadorAux=0;
     String tengoStock = "si";
 
     void borrarTabla() {
@@ -99,6 +100,7 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
                 nroFilas++;
                 contador++;
                 contadorTotal++;
+                contadorAux++;
 
             }
         } catch (SQLException ex) {
@@ -588,6 +590,7 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
         // TODO add your handling code here:
         borrarTabla();
         contador = 0;
+        contadorAux=0;
         int nroFilas = 0, codigo, stock = 0;
         Conexion con = new Conexion();
         Connection reg = con.obtenerConexion();
@@ -620,6 +623,7 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
                 tbRegistro.setValueAt(null, nroFilas, 9);
                 nroFilas++;
                 contador++;
+                contadorAux++;
             }
         } catch (SQLException ex) {
         }
@@ -629,6 +633,7 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
         // TODO add your handling code here:
         borrarTabla();
         contador = 0;
+        contadorAux=0;
         int nroFilas = 0, codigo, stock = 0;
         Conexion con = new Conexion();
         Connection reg = con.obtenerConexion();
@@ -662,6 +667,7 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
                     tbRegistro.setValueAt(resultado2.getString("unidad"), nroFilas, 8);
                     nroFilas++;
                     contador++;
+                    contadorAux++;
                 }
             }
         } catch (SQLException ex) {
@@ -672,6 +678,7 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
         // TODO add your handling code here:
         borrarTabla();
         contador = 0;
+        contadorAux=0;
         int nroFilas = 0, codigo, stock = 0;
         Conexion con = new Conexion();
         Connection reg = con.obtenerConexion();
@@ -705,6 +712,7 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
                     tbRegistro.setValueAt(resultado2.getString("unidad"), nroFilas, 8);
                     nroFilas++;
                     contador++;
+                    contadorAux++;
                 }
             }
         } catch (SQLException ex) {
@@ -750,7 +758,7 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
         texto = new HSSFRichTextString("Unidad que solicita");
         celda.setCellValue(texto);
 
-        for (nroFilas = 0; nroFilas < contadorTotal; nroFilas++) {
+        for (nroFilas = 0; nroFilas < contadorAux; nroFilas++) {
             a0 = tbRegistro.getValueAt(nroFilas, 1).toString();
             a1 = tbRegistro.getValueAt(nroFilas, 2).toString();
             a2 = tbRegistro.getValueAt(nroFilas, 3).toString();
