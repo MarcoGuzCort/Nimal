@@ -6,12 +6,15 @@
 package modelos;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
+import modelos.Registro;
 import servicios.Conexion;
 import servicios.Registro_servicio;
-
 
 /**
  *
@@ -19,18 +22,31 @@ import servicios.Registro_servicio;
  */
 public class DlgIngresoRegistro extends javax.swing.JDialog {
 
+    
+      public static boolean isValidDate(String inDate) {
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    dateFormat.setLenient(false);
+    try {
+      dateFormat.parse(inDate.trim());
+    } catch (Exception e) {
+      return false;
+    }
+    return true;
+  }
+      
     /**
      * Creates new form DlgIngresoRegistro
      */
-    public static String fechaActual(){
-        Date fecha=new Date();
-        SimpleDateFormat formatoFecha=new SimpleDateFormat("dd/MM/YYYY");
+    public static String fechaActual() {
+        Date fecha = new Date();
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
         return formatoFecha.format(fecha);
     }
+
     public DlgIngresoRegistro(javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
         initComponents();
-         this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -50,7 +66,6 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         txtFechaAA = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        txtMedida = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtDescripcion = new javax.swing.JTextArea();
         jLabel6 = new javax.swing.JLabel();
@@ -63,6 +78,7 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
         btnLimpiar = new javax.swing.JButton();
         btnVolver = new javax.swing.JButton();
         btnFechaActual = new javax.swing.JButton();
+        cmbMedida = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -102,12 +118,6 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
         });
 
         jLabel5.setText("Medida");
-
-        txtMedida.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtMedidaActionPerformed(evt);
-            }
-        });
 
         txtDescripcion.setColumns(20);
         txtDescripcion.setRows(5);
@@ -157,6 +167,11 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
 
         btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/1446609695_edit-clear.png"))); // NOI18N
         btnLimpiar.setToolTipText("Limpiar casillas de texto");
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarActionPerformed(evt);
+            }
+        });
 
         btnVolver.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/1446609011_go-back.png"))); // NOI18N
         btnVolver.setToolTipText("Volver");
@@ -173,6 +188,8 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
                 btnFechaActualActionPerformed(evt);
             }
         });
+
+        cmbMedida.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione medida del medicamento", "sin medida", "100ml", "125ml", "250ml", "500ml", "1000ml" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -195,7 +212,6 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
                         .addGap(18, 18, 18)
                         .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(txtMedida)
                     .addComponent(txtId_registro)
                     .addComponent(jScrollPane1)
                     .addComponent(txtStock, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -210,7 +226,8 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
                         .addComponent(txtFechaDD, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnFechaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnFechaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbMedida, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(45, 45, 45))
         );
         jPanel1Layout.setVerticalGroup(
@@ -246,7 +263,7 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(txtMedida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbMedida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(9, 9, 9)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
@@ -273,18 +290,14 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtMedidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMedidaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtMedidaActionPerformed
-
     private void txtId_registroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtId_registroActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtId_registroActionPerformed
 
     private void txtFechaAAMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtFechaAAMouseClicked
         // TODO add your handling code here:
-       txtFechaAA.setText(null);
-        String vacio="";
+        txtFechaAA.setText(null);
+        String vacio = "";
         if (txtFechaMM.getText().equals(vacio)) {
             txtFechaMM.setText("MM");
         }
@@ -295,8 +308,8 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
 
     private void txtFechaMMMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtFechaMMMouseClicked
         // TODO add your handling code here:
-            txtFechaMM.setText(null);
-        String vacio="";
+        txtFechaMM.setText(null);
+        String vacio = "";
         if (txtFechaAA.getText().equals(vacio)) {
             txtFechaAA.setText("AAAA");
         }
@@ -309,8 +322,8 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
     private void txtFechaDDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtFechaDDMouseClicked
         // TODO add your handling code here:
         txtFechaDD.setText(null);
-               txtFechaDD.setText(null);
-        String vacio="";
+        txtFechaDD.setText(null);
+        String vacio = "";
         if (txtFechaAA.getText().equals(vacio)) {
             txtFechaAA.setText("AAAA");
         }
@@ -326,23 +339,77 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
     }//GEN-LAST:event_btnVolverMouseClicked
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        // TODO add your handling code here:
-        Registro registro=new Registro();
-        Registro_servicio rs=new Registro_servicio();
+
+        
+
+// TODO add your handling code here:
+        
+        
+        
+        Registro registro = new Registro();
+        Registro_servicio rs = new Registro_servicio();
         Conexion con = new Conexion();
         Connection reg = con.obtenerConexion();
-        int id_registro,stock;
-        String nombre,fecha,medida;
-        id_registro=Integer.parseInt(txtId_registro.getText());
-        nombre=txtDescripcion.getText();
-        fecha=txtFechaAA.getText()+"-"+txtFechaMM.getText()+"-"+txtFechaDD.getText();
-        medida=txtMedida.getText();
-        stock=Integer.parseInt(txtStock.getText());
-        registro=new Registro(id_registro,nombre,fecha,medida,stock);
-        rs.guardar(reg, registro);
-        JOptionPane.showMessageDialog(this,"Se guardo su registro correctamente");
-        this.setVisible(false);
+        int id_registro, stock, aux = 0;
+        String nombre, fecha, medida;
+        id_registro = Integer.parseInt(txtId_registro.getText());
+        nombre = txtDescripcion.getText();
+        fecha = txtFechaAA.getText() + "-" + txtFechaMM.getText() + "-" + txtFechaDD.getText();
+        medida = cmbMedida.getSelectedItem().toString();
+        stock = Integer.parseInt(txtStock.getText());
+        registro = new Registro(id_registro, nombre, fecha, medida, stock);
+        
+        String aux5 = txtId_registro.getText().trim();
+        String aux2 = txtDescripcion.getText().trim();
+        String ano = txtFechaAA.getText().trim();
+        String mes = txtFechaMM.getText().trim();
+        String dia = txtFechaDD.getText().trim();
+        String aux13 = cmbMedida.getSelectedItem().toString();
+        String aux15 = txtStock.getText();
+        String ano1 = txtFechaAA.getText();
+        String mes1 = txtFechaMM.getText();
+        String dia1= txtFechaDD.getText();
 
+        String fechas = ano1+'-'+mes1+'-'+dia1;
+        
+        if (isValidDate(fechas)) {
+     
+            if(aux13== "Seleccione medida del medicamento"||aux5.length()== 0||aux2.length()== 0||ano.length()== 0||dia.length()== 0||mes.length()== 0||aux15.length()== 0){
+                JOptionPane.showMessageDialog(this,"Cada campo debe ser llenado","Error",JOptionPane.ERROR_MESSAGE);
+            }else{
+        
+        try {
+            PreparedStatement consulta = reg.prepareStatement("SELECT * FROM registro");
+            ResultSet resultado = consulta.executeQuery();
+            while (resultado.next()) {
+                if (resultado.getInt("id_registro") == id_registro) {
+                    aux=1;
+                } else {
+                    if (resultado.getString("nombre").equals(nombre) && resultado.getString("medida").equals(medida)) {
+                        aux = 2;
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+
+        }
+        if (aux == 0) {
+            rs.guardar(reg, registro);
+            JOptionPane.showMessageDialog(this, "Se guardo su registro correctamente");
+            this.setVisible(false);
+        } else {
+            if(aux==2){
+            JOptionPane.showMessageDialog(this, "Ya se encuentra el NOMBRE y MEDIDA del medicamento registrado en nuestras bases de datos");
+            cmbMedida.setSelectedItem("Seleccione medida del medicamento");
+            cmbMedida.requestFocus();}else{
+                if(aux==1){
+                   JOptionPane.showMessageDialog(this, "Ya se encuentra el CODIGO del medicamento registrado en nuestras bases de datos");
+                   txtId_registro.setText(null);
+                   txtId_registro.requestFocus();
+                }
+            }
+        }
+        }}else{JOptionPane.showMessageDialog(this,"Error en la fecha","Error",JOptionPane.ERROR_MESSAGE); }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void txtFechaAAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFechaAAActionPerformed
@@ -352,7 +419,7 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
     private void txtFechaAAFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFechaAAFocusGained
         // TODO add your handling code here:
         txtFechaAA.setText(null);
-        String vacio="";
+        String vacio = "";
         if (txtFechaMM.getText().equals(vacio)) {
             txtFechaMM.setText("MM");
         }
@@ -364,7 +431,7 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
     private void txtFechaMMFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFechaMMFocusGained
         // TODO add your handling code here:
         txtFechaMM.setText(null);
-        String vacio="";
+        String vacio = "";
         if (txtFechaAA.getText().equals(vacio)) {
             txtFechaAA.setText("AAAA");
         }
@@ -377,7 +444,7 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
     private void txtFechaDDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFechaDDFocusGained
         // TODO add your handling code here:
         txtFechaDD.setText(null);
-        String vacio="";
+        String vacio = "";
         if (txtFechaAA.getText().equals(vacio)) {
             txtFechaAA.setText("AAAA");
         }
@@ -389,11 +456,20 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
 
     private void btnFechaActualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFechaActualActionPerformed
         // TODO add your handling code here:
-        String[] fecha=fechaActual().split("/");
+        String[] fecha = fechaActual().split("/");
         txtFechaDD.setText(fecha[0]);
         txtFechaMM.setText(fecha[1]);
         txtFechaAA.setText(fecha[2]);
     }//GEN-LAST:event_btnFechaActualActionPerformed
+
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        // TODO add your handling code here:
+        txtId_registro.setText(null);
+        txtDescripcion.setText(null);
+        cmbMedida.setSelectedItem("Seleccione medida del medicamento");
+        txtStock.setText(null);
+        txtId_registro.requestFocus();
+    }//GEN-LAST:event_btnLimpiarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -442,6 +518,7 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnVolver;
+    private javax.swing.JComboBox cmbMedida;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -457,7 +534,6 @@ public class DlgIngresoRegistro extends javax.swing.JDialog {
     private javax.swing.JTextField txtFechaDD;
     private javax.swing.JTextField txtFechaMM;
     private javax.swing.JTextField txtId_registro;
-    private javax.swing.JTextField txtMedida;
     private javax.swing.JTextField txtStock;
     // End of variables declaration//GEN-END:variables
 }

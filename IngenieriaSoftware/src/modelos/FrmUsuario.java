@@ -5,6 +5,8 @@
  */
 package modelos;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,7 +25,7 @@ public class FrmUsuario extends javax.swing.JFrame {
      */
     public FrmUsuario() {
         initComponents();
-         this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -211,63 +213,80 @@ public class FrmUsuario extends javax.swing.JFrame {
         // TODO add your handling code here:
         Conexion con = new Conexion();
         Connection reg = con.obtenerConexion();
-        String nombre_usuario, cargo="no lee nada",contraseña_usuario;
-        nombre_usuario=txtNombre.getText();
-        contraseña_usuario=txtContraseña.getText();
-        try{
+        String nombre_usuario, cargo = "no lee nada", contraseña_usuario;
+        nombre_usuario = txtNombre.getText();
+        contraseña_usuario = txtContraseña.getText();
+                String aux = txtNombre.getText().trim();
+        String aux2 = txtContraseña.getText().trim();
+        if(aux.length()== 0 || aux2.length()== 0){
+            JOptionPane.showMessageDialog(this,"El campo de USUARIO o CONTRASEÑA no puede estar vacio","Error",JOptionPane.ERROR_MESSAGE); 
+             txtNombre.setText(null);
+                    txtContraseña.setText(null);
+        }else{
+        try {
             PreparedStatement consulta = reg.prepareStatement("SELECT nick_usuario,contraseña,cargo_administrativo FROM usuario");
             ResultSet resultado = consulta.executeQuery();
-            while(resultado.next()){
-                if(nombre_usuario.equals(resultado.getString("nick_usuario")) && contraseña_usuario.equals(resultado.getString("contraseña"))){
-                    cargo=resultado.getString("cargo_administrativo");
+            while (resultado.next()) {
+                if (nombre_usuario.equals(resultado.getString("nick_usuario")) && contraseña_usuario.equals(resultado.getString("contraseña"))) {
+                    cargo = resultado.getString("cargo_administrativo");
+                    try {
+                            FileWriter f = new FileWriter("guardarUsuario.txt");
+                            PrintWriter pf = new PrintWriter(f);
+                            pf.println(resultado.getString("nick_usuario"));
+                            pf.close();
+                        } catch (Exception ex) {
+                        }
                 }
             }
             consulta.close();
-        }catch(SQLException ex){
+        } catch (SQLException ex) {
             System.out.printf("error de conexion");
         }
-        if(cargo.equals("registro bodega")){
-            DlgManejoRegistro dmr=new DlgManejoRegistro(new javax.swing.JDialog(),true);
+        if (cargo.equals("registro bodega")) {
+            DlgManejoRegistro dmr = new DlgManejoRegistro(new javax.swing.JDialog(), true);
             dmr.setVisible(true);
             dmr.dispose();
-        }else{
-            if(cargo.equals("total")){
-                DlgGeneral dg=new DlgGeneral(new javax.swing.JDialog(),true);
+        } else {
+            if (cargo.equals("total")) {
+                DlgGeneral dg = new DlgGeneral(new javax.swing.JDialog(), true);
                 dg.setVisible(true);
                 dg.dispose();
-            }
-            else{
-                if(cargo.equals("registro usuarios")){
-                    DlgManejoUsuario dmu=new DlgManejoUsuario(new javax.swing.JDialog(),true);
+            } else {
+                if (cargo.equals("registro usuarios")) {
+                    DlgManejoUsuario dmu = new DlgManejoUsuario(new javax.swing.JDialog(), true);
                     dmu.setVisible(true);
                     dmu.dispose();
-                }
-                else{
-                    if(cargo.equals("pedidos de bodega")){
-                        DlgRealizarPedidos drp=new DlgRealizarPedidos(new javax.swing.JDialog(),true);
+                } else {
+                    if (cargo.equals("pedidos de bodega")) {
+                        DlgRealizarPedidos drp = new DlgRealizarPedidos(new javax.swing.JDialog(), true);
                         drp.setVisible(true);
                         drp.dispose();
-                    }else{
-                    if(cargo.equals("no lee nada")){
-                        JOptionPane.showMessageDialog(this," Error, no coinciden los datos del registro de usuario."+"\n"+" Porfavor verifique que su nombre de usuario y contraseña esten correctos");
-                    }}
+                    } else {
+                        if (cargo.equals("no lee nada")) {
+                            JOptionPane.showMessageDialog(this, " Error, no coinciden los datos del registro de usuario." + "\n" + " Porfavor verifique que su nombre de usuario y contraseña esten correctos");
+                        }
+                    }
                 }
             }
         }
         txtNombre.setText(null);
         txtContraseña.setText(null);
-        
+        txtNombre.requestFocus();
+        }
     }//GEN-LAST:event_btnIngresarMouseClicked
 
     private void lbRecuperarContraseñaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbRecuperarContraseñaMouseClicked
         // TODO add your handling code here:
+        DlgRecuperarContraseña drc = new DlgRecuperarContraseña(new javax.swing.JDialog(), true);
+        drc.setVisible(true);
+        drc.dispose();
     }//GEN-LAST:event_lbRecuperarContraseñaMouseClicked
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         // TODO add your handling code here:
-        int resp=JOptionPane.showConfirmDialog(this,"Seguro que desea salir del programa?","Confirma",JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
-        if(resp==JOptionPane.OK_OPTION){
-            JOptionPane.showMessageDialog(this,"Gracias por usar este programa");
+        int resp = JOptionPane.showConfirmDialog(this, "Seguro que desea salir del programa?", "Confirma", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (resp == JOptionPane.OK_OPTION) {
+            JOptionPane.showMessageDialog(this, "Gracias por usar este programa");
             System.exit(0);
         }
     }//GEN-LAST:event_btnSalirActionPerformed

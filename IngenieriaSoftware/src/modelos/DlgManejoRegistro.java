@@ -5,7 +5,9 @@
  */
 package modelos;
 
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,10 +15,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import static modelos.DlgIngresarModificacion.fechaActual;
 import static modelos.DlgIngresoRegistro.fechaActual;
 import servicios.Conexion;
 import servicios.Registro_servicio;
@@ -29,6 +33,7 @@ public class DlgManejoRegistro extends javax.swing.JDialog {
      * Creates new form DlgManejoRegistro
      */
     void borrarTabla() {
+        this.setLocationRelativeTo(null);
         int nroFilas = 0;
         DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
         modeloDeMiTabla.addRow(new Object[nroFilas]);
@@ -299,11 +304,6 @@ public class DlgManejoRegistro extends javax.swing.JDialog {
                 btnActualizarMouseClicked(evt);
             }
         });
-        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActualizarActionPerformed(evt);
-            }
-        });
 
         btnVolver.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/1446609011_go-back.png"))); // NOI18N
         btnVolver.setToolTipText("Volver");
@@ -530,10 +530,6 @@ public class DlgManejoRegistro extends javax.swing.JDialog {
         dg.dispose();
     }//GEN-LAST:event_btnAgregarActionPerformed
 
-    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnActualizarActionPerformed
-
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
         this.setVisible(false);
@@ -547,7 +543,7 @@ public class DlgManejoRegistro extends javax.swing.JDialog {
         Connection reg = con.obtenerConexion();
         Registro_servicio rs = new Registro_servicio();
         int id_registro;
-        String idregistro;
+        String idregistro,usuario="";
         try {
             for (int i = 0; i < tbRegistro.getRowCount(); i++) {
                 boolean a = Boolean.parseBoolean(tbRegistro.getValueAt(i, 0).toString());
@@ -555,14 +551,39 @@ public class DlgManejoRegistro extends javax.swing.JDialog {
                     idregistro = tbRegistro.getValueAt(i, 1).toString();
                     id_registro = Integer.parseInt(idregistro);
                     rs.eliminar(reg, id_registro);
+                    try {
+                    try {
+                        FileReader f = new FileReader("guardarUsuario.txt");
+                        Scanner sf = new Scanner(f);
+                        usuario = sf.nextLine();
+                        sf.close();
+                    } catch (IOException e) {
+                    }
+                    PreparedStatement consulta = reg.prepareStatement("SELECT * FROM usuario");
+                    ResultSet resultado = consulta.executeQuery();
+                    while (resultado.next()) {
+                        if (resultado.getString("nick_usuario").equals(usuario)) {
+                            try {
+                                FileWriter f = new FileWriter("registroFlujoSistema.txt", true);
+                                PrintWriter pf = new PrintWriter(f);
+                                pf.println(resultado.getString("nick_usuario") + "    " + resultado.getString("nombre") + "  " + resultado.getString("apellidos") + " " + resultado.getString("cargo_administrativo") + " " + resultado.getString("unidad") +"  "+"Elimino datos del registro de medicamentos"+ "   "+ fechaActual());
+                                pf.close();
+                            } catch (Exception ex) {
+                            }
+                        }
+                    }
+                } catch (SQLException ex) {
+
                 }
+                
+                }
+                
             }
         } catch (Exception ex) {
 
         }
             JOptionPane.showMessageDialog(this,"Se han eliminado correctamente");
         }
-
     }//GEN-LAST:event_btnBorrarActionPerformed
 
     private void btnActualizarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnActualizarMouseClicked

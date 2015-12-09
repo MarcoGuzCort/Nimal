@@ -6,11 +6,15 @@
 package modelos;
 
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 import servicios.Conexion;
@@ -21,42 +25,58 @@ import servicios.Conexion;
  */
 public class DlgIngresarModificacion extends javax.swing.JDialog {
 
+      public static boolean isValidDate(String inDate) {
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    dateFormat.setLenient(false);
+    try {
+      dateFormat.parse(inDate.trim());
+    } catch (Exception e) {
+      return false;
+    }
+    return true;
+  }
     /**
      * Creates new form DlgIngresarModificacion
      */
-    
+    public static String fechaActual() {
+        Date fecha = new Date();
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("YYYY-MM-dd");
+        return formatoFecha.format(fecha);
+    }
     public DlgIngresarModificacion(javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        this.setLocationRelativeTo(null);
         Conexion con = new Conexion();
         Connection reg = con.obtenerConexion();
-        String idregistro="";
-        String fechaArray[]=new String[3];
-        try{
-            FileReader f=new FileReader("guardarValor.txt");
-            Scanner sf=new Scanner(f);
-            idregistro=sf.nextLine();
+        String idregistro = "";
+        String fechaArray[] = new String[3];
+        try {
+            FileReader f = new FileReader("guardarValor.txt");
+            Scanner sf = new Scanner(f);
+            idregistro = sf.nextLine();
             sf.close();
-        }catch(IOException e){}
-        try{
+        } catch (IOException e) {
+        }
+        try {
             PreparedStatement consulta = reg.prepareStatement("SELECT * FROM registro");
             ResultSet resultado = consulta.executeQuery();
-            while(resultado.next()){
-                if(Integer.parseInt(idregistro)==resultado.getInt("id_registro")){
+            while (resultado.next()) {
+                if (Integer.parseInt(idregistro) == resultado.getInt("id_registro")) {
                     txtId_registro.setText(idregistro);
                     txtDescripcion.setText(resultado.getString("nombre"));
-                    fechaArray=resultado.getString("fecha").split("-");
+                    fechaArray = resultado.getString("fecha").split("-");
                     txtFechaAA.setText(fechaArray[0]);
                     txtFechaMM.setText(fechaArray[1]);
                     txtFechaDD.setText(fechaArray[2]);
-                    txtMedida.setText(resultado.getString("medida"));
+                    cmbMedida.setSelectedItem(resultado.getString("medida"));
                     txtStock.setText(Integer.toString(resultado.getInt("stock")));
                 }
             }
-        }catch(SQLException ex){
+        } catch (SQLException ex) {
             System.out.printf("error de conexion");
         }
-        
+
     }
 
     /**
@@ -80,14 +100,13 @@ public class DlgIngresarModificacion extends javax.swing.JDialog {
         txtFechaDD = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        txtMedida = new javax.swing.JTextField();
         txtStock = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         btnModificar = new javax.swing.JButton();
         btnVolver = new javax.swing.JButton();
-        btnLimpiar = new javax.swing.JButton();
+        cmbMedida = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -140,12 +159,6 @@ public class DlgIngresarModificacion extends javax.swing.JDialog {
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel8.setText("/");
 
-        txtMedida.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtMedidaActionPerformed(evt);
-            }
-        });
-
         jLabel5.setText("Fecha");
 
         jLabel6.setText("Medida");
@@ -168,8 +181,7 @@ public class DlgIngresarModificacion extends javax.swing.JDialog {
             }
         });
 
-        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/1446609695_edit-clear.png"))); // NOI18N
-        btnLimpiar.setToolTipText("Limpiar casillas de texto");
+        cmbMedida.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione medida del medicamento", "sin medida", "100ml", "125ml", "250ml", "500ml", "1000ml" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -187,7 +199,6 @@ public class DlgIngresarModificacion extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtStock, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtMedida, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(txtFechaAA, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -201,11 +212,10 @@ public class DlgIngresarModificacion extends javax.swing.JDialog {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(txtId_registro)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnModificar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbMedida, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -234,15 +244,14 @@ public class DlgIngresarModificacion extends javax.swing.JDialog {
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtMedida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
+                    .addComponent(jLabel6)
+                    .addComponent(cmbMedida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9))
                 .addGap(30, 30, 30)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnModificar)
                     .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(24, Short.MAX_VALUE))
@@ -283,35 +292,98 @@ public class DlgIngresarModificacion extends javax.swing.JDialog {
         txtFechaDD.setText(null);
     }//GEN-LAST:event_txtFechaDDMouseClicked
 
-    private void txtMedidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMedidaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtMedidaActionPerformed
-
     private void btnModificarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnModificarMouseClicked
         // TODO add your handling code here:
+        int aux = 0;
         Conexion con = new Conexion();
         Connection reg = con.obtenerConexion();
-        String idregistro="";
-        try{
-            FileReader f=new FileReader("guardarValor.txt");
-            Scanner sf=new Scanner(f);
-            idregistro=sf.nextLine();
-            sf.close();
-        }catch(IOException e){}
-        try{
-            PreparedStatement consulta = reg.prepareStatement("UPDATE registro SET id_registro=?,nombre=?,fecha=?,medida=?,stock=? WHERE id_registro="+idregistro);
-            consulta.setInt(1,Integer.parseInt(txtId_registro.getText()));
-            consulta.setString(2,txtDescripcion.getText());
-            consulta.setString(3,txtFechaAA.getText()+"-"+txtFechaMM.getText()+"-"+txtFechaDD.getText());
-            consulta.setString(4,txtMedida.getText());
-            consulta.setInt(5,Integer.parseInt(txtStock.getText()));
-            consulta.execute();          
-            JOptionPane.showMessageDialog(this,"Se realizo exitosamente su modificacion en el sistema!");
-            this.setVisible(false);
-        }catch(SQLException ex){
-            System.out.printf("error de conexion");
-        }
+        String idregistro = "",usuario="";
+        String aux5 = txtId_registro.getText().trim();
+        String aux2 = txtDescripcion.getText().trim();
+        String ano = txtFechaAA.getText().trim();
+        String mes = txtFechaMM.getText().trim();
+        String dia = txtFechaDD.getText().trim();
+        String aux13 = cmbMedida.getSelectedItem().toString();
+        String aux15 = txtStock.getText();
+        String ano1 = txtFechaAA.getText();
+        String mes1 = txtFechaMM.getText();
+        String dia1= txtFechaDD.getText();
+
+        String fecha = ano1+'-'+mes1+'-'+dia1;
         
+        
+        
+        if (isValidDate(fecha)) {
+     
+            if(aux13== "Seleccione medida del medicamento"||aux5.length()== 0||aux2.length()== 0||ano.length()== 0||dia.length()== 0||mes.length()== 0||aux15.length()== 0){
+                JOptionPane.showMessageDialog(this,"Cada campo debe ser llenado","Error",JOptionPane.ERROR_MESSAGE);
+            }else{
+        
+        try {
+            FileReader f = new FileReader("guardarValor.txt");
+            Scanner sf = new Scanner(f);
+            idregistro = sf.nextLine();
+            sf.close();
+        } catch (IOException e) {
+        }
+        try {
+            PreparedStatement consulta = reg.prepareStatement("SELECT * FROM registro");
+            ResultSet resultado = consulta.executeQuery();
+            while (resultado.next()) {
+                    if(Integer.parseInt(txtId_registro.getText())!=Integer.parseInt(idregistro)){
+                    if (resultado.getString("id_registro").equals(txtId_registro.getText())) {
+                        aux = 2;
+                }}
+            }
+        } catch (SQLException ex) {
+
+        }
+        if (aux == 0) {
+            try {
+                PreparedStatement consulta = reg.prepareStatement("UPDATE registro SET id_registro=?,nombre=?,fecha=?,medida=?,stock=? WHERE id_registro=" + idregistro);
+                consulta.setInt(1, Integer.parseInt(txtId_registro.getText()));
+                consulta.setString(2, txtDescripcion.getText());
+                consulta.setString(3, txtFechaAA.getText() + "-" + txtFechaMM.getText() + "-" + txtFechaDD.getText());
+                consulta.setString(4, cmbMedida.getSelectedItem().toString());
+                consulta.setInt(5, Integer.parseInt(txtStock.getText()));
+                consulta.execute();
+                JOptionPane.showMessageDialog(this, "Se realizo exitosamente su modificacion en el sistema!");
+                this.setVisible(false);
+            } catch (SQLException ex) {
+                System.out.printf("error de conexion");
+            }
+            try {
+                try {
+                    FileReader f = new FileReader("guardarUsuario.txt");
+                    Scanner sf = new Scanner(f);
+                    usuario = sf.nextLine();
+                    sf.close();
+                } catch (IOException e) {
+                }
+                PreparedStatement consulta = reg.prepareStatement("SELECT * FROM usuario");
+                ResultSet resultado = consulta.executeQuery();
+                while(resultado.next()){
+                    if(resultado.getString("nick_usuario").equals(usuario)){
+                        try {
+                            FileWriter f = new FileWriter("registroFlujoSistema.txt",true);
+                            PrintWriter pf = new PrintWriter(f);
+                            pf.println(resultado.getString("nick_usuario")+"    "+resultado.getString("nombre")+"  "+resultado.getString("apellidos")+" "+resultado.getString("cargo_administrativo")+" "+resultado.getString("unidad")+"   "+"Se modifico un medicamento en el registro"+" "+fechaActual());
+                            pf.close();
+                        } catch (Exception ex) {
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+
+            }
+        } else {
+            if (aux == 2) {
+                JOptionPane.showMessageDialog(this, "Ya se encuentra el CODIGO del medicamento registrado en nuestras bases de datos");
+                txtId_registro.requestFocus();
+            } 
+
+        }
+        }}else{JOptionPane.showMessageDialog(this,"Error en la fecha","Error",JOptionPane.ERROR_MESSAGE); }
     }//GEN-LAST:event_btnModificarMouseClicked
 
     private void btnVolverMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVolverMouseClicked
@@ -362,9 +434,9 @@ public class DlgIngresarModificacion extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnVolver;
+    private javax.swing.JComboBox cmbMedida;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -380,7 +452,6 @@ public class DlgIngresarModificacion extends javax.swing.JDialog {
     private javax.swing.JTextField txtFechaDD;
     private javax.swing.JTextField txtFechaMM;
     private javax.swing.JTextField txtId_registro;
-    private javax.swing.JTextField txtMedida;
     private javax.swing.JTextField txtStock;
     // End of variables declaration//GEN-END:variables
 }

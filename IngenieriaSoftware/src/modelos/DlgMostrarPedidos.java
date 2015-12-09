@@ -5,12 +5,20 @@
  */
 package modelos;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import servicios.Conexion;
+import servicios.Registro_servicio;
 
 /**
  *
@@ -21,10 +29,33 @@ public class DlgMostrarPedidos extends javax.swing.JDialog {
     /**
      * Creates new form DlgMostrarPedidos
      */
-    Integer contador=0;
+    
+    Integer contador = 0,contadorTotal=0;
+    void borrarTabla() {
+        int nroFilas = 0;
+        DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
+        modeloDeMiTabla.addRow(new Object[nroFilas]);
+        for (nroFilas = 0; nroFilas < 100; nroFilas++) {
+            tbRegistro.setValueAt(false, nroFilas, 0);
+            tbRegistro.setValueAt(null, nroFilas, 1);
+            tbRegistro.setValueAt(null, nroFilas, 2);
+            tbRegistro.setValueAt(null, nroFilas, 3);
+            tbRegistro.setValueAt(null, nroFilas, 4);
+            tbRegistro.setValueAt(null, nroFilas, 5);
+            tbRegistro.setValueAt(null, nroFilas, 6);
+        }
+        
+
+    }
+     public static String fechaActual() {
+        Date fecha = new Date();
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
+        return formatoFecha.format(fecha);
+    }
     public DlgMostrarPedidos(javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        pnlFecha.setVisible(false);
         this.setLocationRelativeTo(null);
         int nroFilas = 0;
         Conexion con = new Conexion();
@@ -63,9 +94,20 @@ public class DlgMostrarPedidos extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         tbRegistro = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox();
+        txtBusqueda = new javax.swing.JTextField();
+        cmbBusqueda = new javax.swing.JComboBox();
+        btnBuscar = new javax.swing.JButton();
+        pnlFecha = new javax.swing.JPanel();
+        txtFechaAA = new javax.swing.JTextField();
+        txtFechaMM = new javax.swing.JTextField();
+        txtFechaDD = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        btnFechaActual = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        btnEliminar = new javax.swing.JButton();
+        btnVolver = new javax.swing.JButton();
+        btnActualizar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -205,7 +247,7 @@ public class DlgMostrarPedidos extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 781, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -218,34 +260,166 @@ public class DlgMostrarPedidos extends javax.swing.JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Buscar pedido"));
 
-        jTextField1.setText("jTextField1");
+        cmbBusqueda.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione area de pedido", "nº Pedido", "Medicamento", "Medida", "Estado de entrega", "Fecha solicitud" }));
+        cmbBusqueda.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                cmbBusquedaFocusLost(evt);
+            }
+        });
 
-        jButton1.setText("jButton1");
+        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/1447384412_folder-search.png"))); // NOI18N
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione area de pedido", "nº Pedido", "Medicamento", "Cantidad propuesta", "Medida", "Estado de solicitud", "Fecha" }));
+        txtFechaAA.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtFechaAA.setText("AAAA");
+        txtFechaAA.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtFechaAAFocusGained(evt);
+            }
+        });
+
+        txtFechaMM.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtFechaMM.setText("MM");
+        txtFechaMM.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtFechaMMFocusGained(evt);
+            }
+        });
+
+        txtFechaDD.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtFechaDD.setText("DD");
+        txtFechaDD.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtFechaDDFocusGained(evt);
+            }
+        });
+
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("-");
+
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("-");
+
+        btnFechaActual.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/1447540743_calendar-clock.png"))); // NOI18N
+        btnFechaActual.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFechaActualActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlFechaLayout = new javax.swing.GroupLayout(pnlFecha);
+        pnlFecha.setLayout(pnlFechaLayout);
+        pnlFechaLayout.setHorizontalGroup(
+            pnlFechaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlFechaLayout.createSequentialGroup()
+                .addComponent(txtFechaAA, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtFechaMM, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtFechaDD, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnFechaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(21, Short.MAX_VALUE))
+        );
+        pnlFechaLayout.setVerticalGroup(
+            pnlFechaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlFechaLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnlFechaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtFechaAA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtFechaMM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtFechaDD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addGap(16, 16, 16))
+            .addGroup(pnlFechaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnFechaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
-                .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(29, 29, 29)
+                .addComponent(cmbBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addGap(13, 13, 13)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmbBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(pnlFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/1446604726_trash.png"))); // NOI18N
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
+        btnVolver.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/1446609011_go-back.png"))); // NOI18N
+        btnVolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVolverActionPerformed(evt);
+            }
+        });
+
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/1446607608_adept_update.png"))); // NOI18N
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(btnVolver, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -255,18 +429,21 @@ public class DlgMostrarPedidos extends javax.swing.JDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(13, 13, 13)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -286,6 +463,328 @@ public class DlgMostrarPedidos extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+        // TODO add your handling code here:
+        this.setVisible(false);
+    }//GEN-LAST:event_btnVolverActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+        Integer cont = 0;
+        int resp = JOptionPane.showConfirmDialog(this, "Seguro que desea Eliminar el pedido Pendiente?", "Confirma", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (resp == JOptionPane.OK_OPTION) {
+            Conexion con = new Conexion();
+            Connection reg = con.obtenerConexion();
+            Integer npedido = 0;
+            try {
+                for (int i = 0; i < tbRegistro.getRowCount(); i++) {
+                    boolean a = Boolean.parseBoolean(tbRegistro.getValueAt(i, 0).toString());
+                    if (a == true) {
+                        npedido = Integer.parseInt(tbRegistro.getValueAt(i, 1).toString());
+                        if (tbRegistro.getValueAt(i, 5).toString().equals("Pendiente")) {
+                            try {
+                                PreparedStatement consulta = reg.prepareStatement("DELETE FROM pedido WHERE npedido = ?");
+                                consulta.setInt(1, npedido);
+                                consulta.execute();
+                            } catch (SQLException ex) {
+
+                            }
+                        } else {
+                            cont = 1;
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+
+            }
+
+            JOptionPane.showMessageDialog(this, "Se han eliminado correctamente");
+            if (cont == 1) {
+                JOptionPane.showMessageDialog(this, "Los pedidos con estado Entregado, no pueden ser eliminados");
+            }
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        // TODO add your handling code here:
+        borrarTabla();
+        int nroFilas = 0;
+        Conexion con = new Conexion();
+        Connection reg = con.obtenerConexion();
+        try {
+            PreparedStatement consulta = reg.prepareStatement("SELECT * FROM pedido");
+            ResultSet resultado = consulta.executeQuery();
+            while (resultado.next()) {
+                DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
+                modeloDeMiTabla.addRow(new Object[nroFilas]);
+                tbRegistro.setValueAt(false, nroFilas, 0);
+                tbRegistro.setValueAt(resultado.getInt("npedido"), nroFilas, 1);
+                tbRegistro.setValueAt(resultado.getString("medicamento"), nroFilas, 2);
+                tbRegistro.setValueAt(resultado.getInt("cantidad_requerida"), nroFilas, 3);
+                tbRegistro.setValueAt(resultado.getString("medida"), nroFilas, 4);
+                tbRegistro.setValueAt(resultado.getString("estado_entrega"), nroFilas, 5);
+                tbRegistro.setValueAt(resultado.getString("fecha_solicitud"), nroFilas, 6);
+                nroFilas++;
+                contador++;
+            }
+        } catch (SQLException ex) {
+        }
+    }//GEN-LAST:event_btnActualizarActionPerformed
+
+    private void cmbBusquedaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cmbBusquedaFocusLost
+        // TODO add your handling code here:
+        String fecha = (String) cmbBusqueda.getSelectedItem();
+        if (fecha.equals("Fecha solicitud")) {
+            pnlFecha.setVisible(true);
+            txtFechaAA.requestFocus();
+        } else {
+            pnlFecha.setVisible(false);
+        }
+    }//GEN-LAST:event_cmbBusquedaFocusLost
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        // TODO add your handling code here:
+
+        borrarTabla();
+        Conexion con = new Conexion();
+        Connection reg = con.obtenerConexion();
+        String busqueda = (String) cmbBusqueda.getSelectedItem();
+        borrarTabla();
+        if (busqueda.equals("nº Pedido")) {
+            int nroFilas = 0, codigo, stock = 0;
+            try {
+                PreparedStatement consulta2 = reg.prepareStatement("SELECT * FROM pedido");
+                ResultSet resultado2 = consulta2.executeQuery();
+                while (resultado2.next()) {
+                    if (resultado2.getInt("npedido") == Integer.parseInt(txtBusqueda.getText())) {
+                        DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
+                        modeloDeMiTabla.addRow(new Object[nroFilas]);
+                        try {
+                            PreparedStatement consulta1 = reg.prepareStatement("SELECT * FROM registro");
+                            ResultSet resultado1 = consulta1.executeQuery();
+                            while (resultado1.next()) {
+                                if (resultado2.getString("medicamento").equals(resultado1.getString("nombre"))) {
+                                    codigo = resultado1.getInt("id_registro");
+                                    stock = resultado1.getInt("stock");
+                                }
+                            }
+                        } catch (SQLException ex) {
+                        }
+                        tbRegistro.setValueAt(false, nroFilas, 0);
+                        tbRegistro.setValueAt(resultado2.getInt("npedido"), nroFilas, 1);
+                        tbRegistro.setValueAt(resultado2.getString("medicamento"), nroFilas, 2);
+                        tbRegistro.setValueAt(resultado2.getInt("cantidad_requerida"), nroFilas, 3);
+                        tbRegistro.setValueAt(resultado2.getString("medida"), nroFilas, 4);
+                        tbRegistro.setValueAt(resultado2.getString("estado_entrega"), nroFilas, 5);
+                        tbRegistro.setValueAt(resultado2.getString("fecha_solicitud"), nroFilas, 6);
+                        nroFilas++;
+                        contador++;
+                        contadorTotal++;
+
+                    }
+                }
+            } catch (SQLException ex) {
+            }
+        } else {
+            if (busqueda.equals("Medicamento")) {
+                int nroFilas = 0, codigo, stock = 0;
+                try {
+                    PreparedStatement consulta2 = reg.prepareStatement("SELECT * FROM pedido");
+                    ResultSet resultado2 = consulta2.executeQuery();
+                    while (resultado2.next()) {
+                        if (resultado2.getString("medicamento").equals(txtBusqueda.getText())) {
+                            DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
+                            modeloDeMiTabla.addRow(new Object[nroFilas]);
+                            try {
+                                PreparedStatement consulta1 = reg.prepareStatement("SELECT * FROM registro");
+                                ResultSet resultado1 = consulta1.executeQuery();
+                                while (resultado1.next()) {
+                                    if (resultado2.getString("medicamento").equals(resultado1.getString("nombre"))) {
+                                        codigo = resultado1.getInt("id_registro");
+                                        stock = resultado1.getInt("stock");
+                                    }
+                                }
+                            } catch (SQLException ex) {
+                            }
+                            tbRegistro.setValueAt(false, nroFilas, 0);
+                            tbRegistro.setValueAt(resultado2.getInt("npedido"), nroFilas, 1);
+                            tbRegistro.setValueAt(resultado2.getString("medicamento"), nroFilas, 2);
+                            tbRegistro.setValueAt(resultado2.getInt("cantidad_requerida"), nroFilas, 3);
+                            tbRegistro.setValueAt(resultado2.getString("medida"), nroFilas, 4);
+                            tbRegistro.setValueAt(resultado2.getString("estado_entrega"), nroFilas, 5);
+                            tbRegistro.setValueAt(resultado2.getString("fecha_solicitud"), nroFilas, 6);
+                            nroFilas++;
+                            contador++;
+                            contadorTotal++;
+
+                        }
+                    }
+                } catch (SQLException ex) {
+                }
+            } else {
+                if (busqueda.equals("Fecha solicitud")) {
+                    int nroFilas = 0, codigo, stock = 0;
+                    try {
+                        PreparedStatement consulta2 = reg.prepareStatement("SELECT * FROM pedido");
+                        ResultSet resultado2 = consulta2.executeQuery();
+                        while (resultado2.next()) {
+                            if (resultado2.getString("fecha_solicitud").equals(txtFechaAA.getText() + "-" + txtFechaMM.getText() + "-" + txtFechaDD.getText())) {
+                                DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
+                                modeloDeMiTabla.addRow(new Object[nroFilas]);
+                                try {
+                                    PreparedStatement consulta1 = reg.prepareStatement("SELECT * FROM registro");
+                                    ResultSet resultado1 = consulta1.executeQuery();
+                                    while (resultado1.next()) {
+                                        if (resultado2.getString("medicamento").equals(resultado1.getString("nombre"))) {
+                                            codigo = resultado1.getInt("id_registro");
+                                            stock = resultado1.getInt("stock");
+                                        }
+                                    }
+                                } catch (SQLException ex) {
+                                }
+                                tbRegistro.setValueAt(false, nroFilas, 0);
+                                tbRegistro.setValueAt(resultado2.getInt("npedido"), nroFilas, 1);
+                                tbRegistro.setValueAt(resultado2.getString("medicamento"), nroFilas, 2);
+                                tbRegistro.setValueAt(resultado2.getInt("cantidad_requerida"), nroFilas, 3);
+                                tbRegistro.setValueAt(resultado2.getString("medida"), nroFilas, 4);
+                                tbRegistro.setValueAt(resultado2.getString("estado_entrega"), nroFilas, 5);
+                                tbRegistro.setValueAt(resultado2.getString("fecha_solicitud"), nroFilas, 6);
+                                nroFilas++;
+                                contador++;
+                                contadorTotal++;
+
+                            }
+                        }
+                    } catch (SQLException ex) {
+                    }
+                } else {
+                    if (busqueda.equals("Medida")) {
+                        int nroFilas = 0, codigo, stock = 0;
+                        try {
+                            PreparedStatement consulta2 = reg.prepareStatement("SELECT * FROM pedido");
+                            ResultSet resultado2 = consulta2.executeQuery();
+                            while (resultado2.next()) {
+                                if (resultado2.getString("medida").equals(txtBusqueda.getText())) {
+                                    DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
+                                    modeloDeMiTabla.addRow(new Object[nroFilas]);
+                                    try {
+                                        PreparedStatement consulta1 = reg.prepareStatement("SELECT * FROM registro");
+                                        ResultSet resultado1 = consulta1.executeQuery();
+                                        while (resultado1.next()) {
+                                            if (resultado2.getString("medicamento").equals(resultado1.getString("nombre"))) {
+                                                codigo = resultado1.getInt("id_registro");
+                                                stock = resultado1.getInt("stock");
+                                            }
+                                        }
+                                    } catch (SQLException ex) {
+                                    }
+                                    tbRegistro.setValueAt(false, nroFilas, 0);
+                                    tbRegistro.setValueAt(resultado2.getInt("npedido"), nroFilas, 1);
+                                    tbRegistro.setValueAt(resultado2.getString("medicamento"), nroFilas, 2);
+                                    tbRegistro.setValueAt(resultado2.getInt("cantidad_requerida"), nroFilas, 3);
+                                    tbRegistro.setValueAt(resultado2.getString("medida"), nroFilas, 4);
+                                    tbRegistro.setValueAt(resultado2.getString("estado_entrega"), nroFilas, 5);
+                                    tbRegistro.setValueAt(resultado2.getString("fecha_solicitud"), nroFilas, 6);
+                                    nroFilas++;
+                                    contador++;
+                                    contadorTotal++;
+
+                                }
+                            }
+                        } catch (SQLException ex) {
+                        }
+                    } else {
+                        if (busqueda.equals("Estado de entrega")) {
+                            int nroFilas = 0, codigo, stock = 0;
+                            try {
+                                PreparedStatement consulta2 = reg.prepareStatement("SELECT * FROM pedido");
+                                ResultSet resultado2 = consulta2.executeQuery();
+                                while (resultado2.next()) {
+                                    if (resultado2.getString("estado_entrega").equals(txtBusqueda.getText())) {
+                                        DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
+                                        modeloDeMiTabla.addRow(new Object[nroFilas]);
+                                        try {
+                                            PreparedStatement consulta1 = reg.prepareStatement("SELECT * FROM registro");
+                                            ResultSet resultado1 = consulta1.executeQuery();
+                                            while (resultado1.next()) {
+                                                if (resultado2.getString("medicamento").equals(resultado1.getString("nombre"))) {
+                                                    codigo = resultado1.getInt("id_registro");
+                                                    stock = resultado1.getInt("stock");
+                                                }
+                                            }
+                                        } catch (SQLException ex) {
+                                        }
+                                        tbRegistro.setValueAt(false, nroFilas, 0);
+                                        tbRegistro.setValueAt(resultado2.getInt("npedido"), nroFilas, 1);
+                                        tbRegistro.setValueAt(resultado2.getString("medicamento"), nroFilas, 2);
+                                        tbRegistro.setValueAt(resultado2.getInt("cantidad_requerida"), nroFilas, 3);
+                                        tbRegistro.setValueAt(resultado2.getString("medida"), nroFilas, 4);
+                                        tbRegistro.setValueAt(resultado2.getString("estado_entrega"), nroFilas, 5);
+                                        tbRegistro.setValueAt(resultado2.getString("fecha_solicitud"), nroFilas, 6);
+                                        nroFilas++;
+                                        contador++;
+                                        contadorTotal++;
+
+                                    }
+                                }
+                            } catch (SQLException ex) {
+                            }
+                        } else {
+
+                        }
+                    }
+
+                }
+
+            }
+        }
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void txtFechaAAFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFechaAAFocusGained
+        // TODO add your handling code here:
+        txtFechaAA.setText(null);
+        String vacio = "";
+        if (txtFechaMM.getText().equals(vacio)) {
+            txtFechaMM.setText("MM");
+        }
+        if (txtFechaDD.getText().equals(vacio)) {
+            txtFechaDD.setText("DD");
+        }
+    }//GEN-LAST:event_txtFechaAAFocusGained
+
+    private void txtFechaMMFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFechaMMFocusGained
+        // TODO add your handling code here:
+        txtFechaMM.setText(null);
+        String vacio = "";
+        if (txtFechaAA.getText().equals(vacio)) {
+            txtFechaAA.setText("AAAA");
+        }
+        if (txtFechaDD.getText().equals(vacio)) {
+            txtFechaDD.setText("DD");
+        }
+    }//GEN-LAST:event_txtFechaMMFocusGained
+
+    private void txtFechaDDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFechaDDFocusGained
+        // TODO add your handling code here:
+        txtFechaDD.setText(null);
+        txtFechaDD.setText(null);
+        String vacio = "";
+        if (txtFechaAA.getText().equals(vacio)) {
+            txtFechaAA.setText("AAAA");
+        }
+        if (txtFechaMM.getText().equals(vacio)) {
+            txtFechaMM.setText("MM");
+        }
+    }//GEN-LAST:event_txtFechaDDFocusGained
+
+    private void btnFechaActualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFechaActualActionPerformed
+        // TODO add your handling code here:
+        String[] fecha = fechaActual().split("/");
+        txtFechaDD.setText(fecha[0]);
+        txtFechaMM.setText(fecha[1]);
+        txtFechaAA.setText(fecha[2]);
+    }//GEN-LAST:event_btnFechaActualActionPerformed
 
     /**
      * @param args the command line arguments
@@ -316,8 +815,8 @@ public class DlgMostrarPedidos extends javax.swing.JDialog {
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                DlgMostrarPedidos dialog = new DlgMostrarPedidos(new javax.swing.JDialog(), true);
+              public void run() {
+                DlgRecibirPedidos dialog = new DlgRecibirPedidos(new javax.swing.JDialog(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -330,13 +829,24 @@ public class DlgMostrarPedidos extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnFechaActual;
+    private javax.swing.JButton btnVolver;
+    private javax.swing.JComboBox cmbBusqueda;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JPanel pnlFecha;
     private javax.swing.JTable tbRegistro;
+    private javax.swing.JTextField txtBusqueda;
+    private javax.swing.JTextField txtFechaAA;
+    private javax.swing.JTextField txtFechaDD;
+    private javax.swing.JTextField txtFechaMM;
     // End of variables declaration//GEN-END:variables
 }

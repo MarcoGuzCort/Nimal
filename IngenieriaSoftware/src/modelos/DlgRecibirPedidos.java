@@ -5,11 +5,20 @@
  */
 package modelos;
 
+import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import servicios.Conexion;
 
 /**
@@ -22,12 +31,41 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
      * Creates new form DlgRecibirPedidos1
      */
     Integer contador = 0;
+    Integer contadorTotal = 0;
     String tengoStock = "si";
+
+    void borrarTabla() {
+        this.setLocationRelativeTo(null);
+        int nroFilas = 0;
+        DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
+        modeloDeMiTabla.addRow(new Object[nroFilas]);
+        for (nroFilas = 0; nroFilas < 100; nroFilas++) {
+            tbRegistro.setValueAt(false, nroFilas, 0);
+            tbRegistro.setValueAt(null, nroFilas, 1);
+            tbRegistro.setValueAt(null, nroFilas, 2);
+            tbRegistro.setValueAt(null, nroFilas, 3);
+            tbRegistro.setValueAt(null, nroFilas, 4);
+            tbRegistro.setValueAt(null, nroFilas, 5);
+            tbRegistro.setValueAt(null, nroFilas, 6);
+            tbRegistro.setValueAt(null, nroFilas, 7);
+            tbRegistro.setValueAt(null, nroFilas, 8);
+            tbRegistro.setValueAt(null, nroFilas, 9);
+        }
+
+    }
+
+    public static String fechaActual() {
+        Date fecha = new Date();
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/YYYY");
+        return formatoFecha.format(fecha);
+    }
 
     public DlgRecibirPedidos(javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        int nroFilas = 0, codigo = 0, stock = 0;
+        pnlFecha.setVisible(false);
+        this.setLocationRelativeTo(null);
+        int nroFilas = 0, codigo, stock = 0;
         Conexion con = new Conexion();
         Connection reg = con.obtenerConexion();
         try {
@@ -55,9 +93,13 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
                 tbRegistro.setValueAt(resultado2.getString("estado_entrega"), nroFilas, 5);
                 tbRegistro.setValueAt(resultado2.getString("fecha_solicitud"), nroFilas, 6);
                 tbRegistro.setValueAt(stock, nroFilas, 7);
-                tbRegistro.setValueAt(null, nroFilas, 8);
+                tbRegistro.setValueAt(resultado2.getString("unidad"), nroFilas, 8);
+                tbRegistro.setValueAt(null, nroFilas, 9);
+                
                 nroFilas++;
                 contador++;
+                contadorTotal++;
+
             }
         } catch (SQLException ex) {
         }
@@ -77,14 +119,23 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
         jScrollPane7 = new javax.swing.JScrollPane();
         tbRegistro = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox();
+        txtBusqueda = new javax.swing.JTextField();
+        btnBuscar = new javax.swing.JButton();
+        cmbBusqueda = new javax.swing.JComboBox();
+        pnlFecha = new javax.swing.JPanel();
+        txtFechaAA = new javax.swing.JTextField();
+        txtFechaMM = new javax.swing.JTextField();
+        txtFechaDD = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        btnFechaActual = new javax.swing.JButton();
         jPanel10 = new javax.swing.JPanel();
         btnDespacharPedido = new javax.swing.JButton();
         btnGenerarExcel = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
         btnVolver = new javax.swing.JButton();
+        btnVerTodo = new javax.swing.JButton();
+        btnVerEntregados = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -92,116 +143,116 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
 
         tbRegistro.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "", "nº Pedido", "Medicamento", "Cantidad solicitada", "Medida", "Estado de entrega", "Fecha solicitud", "Stock", "Cantidad asignada"
+                "", "nº Pedido", "Medicamento", "Cantidad solicitada", "Medida", "Estado de entrega", "Fecha solicitud", "Stock", "Unidad", "Cantidad asignada"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                true, false, false, false, false, false, false, false, true
+                true, false, false, false, false, false, false, false, true, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -226,7 +277,7 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
             .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel9Layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 785, Short.MAX_VALUE)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 1049, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         jPanel9Layout.setVerticalGroup(
@@ -241,11 +292,91 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Buscar pedido"));
 
-        jTextField1.setText("jTextField1");
+        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/1447384412_folder-search.png"))); // NOI18N
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
 
-        jButton1.setText("jButton1");
+        cmbBusqueda.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione area de pedido", "nº Pedido", "Medicamento", "Medida", "Estado de entrega", "Fecha solicitud" }));
+        cmbBusqueda.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                cmbBusquedaFocusLost(evt);
+            }
+        });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione area de pedido", "nº Pedido", "Medicamento", "Cantidad propuesta", "Medida", "Estado de solicitud", "Fecha" }));
+        txtFechaAA.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtFechaAA.setText("AAAA");
+        txtFechaAA.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtFechaAAFocusGained(evt);
+            }
+        });
+
+        txtFechaMM.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtFechaMM.setText("MM");
+        txtFechaMM.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtFechaMMFocusGained(evt);
+            }
+        });
+
+        txtFechaDD.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtFechaDD.setText("DD");
+        txtFechaDD.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtFechaDDFocusGained(evt);
+            }
+        });
+
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("-");
+
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("-");
+
+        btnFechaActual.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/1447540743_calendar-clock.png"))); // NOI18N
+        btnFechaActual.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFechaActualActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlFechaLayout = new javax.swing.GroupLayout(pnlFecha);
+        pnlFecha.setLayout(pnlFechaLayout);
+        pnlFechaLayout.setHorizontalGroup(
+            pnlFechaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlFechaLayout.createSequentialGroup()
+                .addComponent(txtFechaAA, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtFechaMM, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtFechaDD, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnFechaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(21, Short.MAX_VALUE))
+        );
+        pnlFechaLayout.setVerticalGroup(
+            pnlFechaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlFechaLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnlFechaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtFechaAA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtFechaMM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtFechaDD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addGap(16, 16, 16))
+            .addGroup(pnlFechaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnFechaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -253,25 +384,34 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cmbBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(37, 37, 37)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
-                .addComponent(jButton1)
-                .addContainerGap(449, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(pnlFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 457, Short.MAX_VALUE)
+                        .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(97, 97, 97))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(cmbBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         btnDespacharPedido.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/1447971239_mail_send.png"))); // NOI18N
+        btnDespacharPedido.setToolTipText("Enviar pedidos");
         btnDespacharPedido.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDespacharPedidoActionPerformed(evt);
@@ -279,13 +419,42 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
         });
 
         btnGenerarExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/1447971036_excel.png"))); // NOI18N
+        btnGenerarExcel.setToolTipText("Generar Excel de los pedidos");
+        btnGenerarExcel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerarExcelActionPerformed(evt);
+            }
+        });
 
         btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/1446607608_adept_update.png"))); // NOI18N
+        btnActualizar.setToolTipText("Ver pedidos pendientes");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
 
         btnVolver.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/1446609011_go-back.png"))); // NOI18N
+        btnVolver.setToolTipText("Volver");
         btnVolver.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnVolverActionPerformed(evt);
+            }
+        });
+
+        btnVerTodo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/1449565997_Hamburger_Round.png"))); // NOI18N
+        btnVerTodo.setToolTipText("Ver todos pedidos");
+        btnVerTodo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerTodoActionPerformed(evt);
+            }
+        });
+
+        btnVerEntregados.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/1449565705_Forward.png"))); // NOI18N
+        btnVerEntregados.setToolTipText("Ver pedidos entregados");
+        btnVerEntregados.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerEntregadosActionPerformed(evt);
             }
         });
 
@@ -299,6 +468,10 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnGenerarExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnVerTodo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnVerEntregados, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -309,11 +482,13 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnDespacharPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnVerTodo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnGenerarExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnDespacharPedido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnVolver, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnVerEntregados, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -337,8 +512,8 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -353,7 +528,7 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 20, Short.MAX_VALUE))
         );
 
         pack();
@@ -361,46 +536,45 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
 
     private void btnDespacharPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDespacharPedidoActionPerformed
         // TODO add your handling code here:
-        boolean a;
         Conexion con = new Conexion();
         Connection reg = con.obtenerConexion();
-        String sql1 = "UPDATE registro SET stock=?", sql2 = "UPDATE pedido SET cantidad_requerida=?, estado_entrega=?";
+        Integer tomarStock = 0;
         for (int i = 0; i < contador; i++) {
-            a = Boolean.parseBoolean(tbRegistro.getValueAt(i, 0).toString());
-            if (a) {
+            boolean a = Boolean.parseBoolean(tbRegistro.getValueAt(i, 0).toString());
+            if (a == true) {
                 try {
-                    PreparedStatement consulta1 = reg.prepareStatement("SELECT * FROM registro");
-                    ResultSet resultado1 = consulta1.executeQuery();
-                    if (resultado1.getInt("stock") - Integer.parseInt(tbRegistro.getValueAt(i, 8).toString()) >= 0) {
-                        try {
-                            PreparedStatement consulta12 = reg.prepareStatement(sql1);
-                            consulta12.setInt(1, resultado1.getInt("stock") - Integer.parseInt(tbRegistro.getValueAt(i, 8).toString()));
-                        } catch (SQLException ex) {
+                    PreparedStatement consulta = reg.prepareStatement("SELECT * FROM registro");
+                    ResultSet resultado = consulta.executeQuery();
+                    while (resultado.next()) {
+                        if (resultado.getString("nombre").equals(tbRegistro.getValueAt(i, 2).toString())) {
+                            tomarStock = resultado.getInt("stock");
                         }
-                    } else {
-                        tengoStock = "no";
                     }
                 } catch (SQLException ex) {
+                    System.out.printf("Error conexion tabla registro wn\n");
+                }
+                tomarStock = tomarStock - Integer.parseInt(tbRegistro.getValueAt(i, 9).toString());
+                try {
+                    PreparedStatement consulta1 = reg.prepareStatement("UPDATE registro SET stock=? WHERE nombre =? ");
+                    consulta1.setInt(1, tomarStock);
+                    consulta1.setString(2, tbRegistro.getValueAt(i, 2).toString());
+                    consulta1.executeUpdate();
+
+                } catch (SQLException ex) {
+                    System.out.printf("Error conexion tabla registro \n");
                 }
                 try {
-                    PreparedStatement consulta2 = reg.prepareStatement("SELECT * FROM pedido");
-                    ResultSet resultado2 = consulta2.executeQuery();
-                    if (resultado2.getInt("cantidad_requerida") - Integer.parseInt(tbRegistro.getValueAt(i, 3).toString()) >= 0 && tengoStock.equals("si")) {
-                        try {
-                            PreparedStatement consulta22 = reg.prepareStatement(sql2);
-                            consulta22.setInt(1, resultado2.getInt("cantidad_requerida") - Integer.parseInt(tbRegistro.getValueAt(i, 3).toString()));
-                            if (resultado2.getInt("cantidad_requerida") - Integer.parseInt(tbRegistro.getValueAt(i, 3).toString()) == 0) {
-                                consulta22.setString(2, "Entregado");
-                            } else {
-                                consulta22.setString(2, "Entregado con resto");
-                            }
-                        } catch (SQLException ex) {
-                        }
-                    }
+                    PreparedStatement consulta2 = reg.prepareStatement("UPDATE pedido SET cantidad_requerida=?, estado_entrega=? WHERE npedido=?");
+                    consulta2.setInt(1, 0);
+                    consulta2.setString(2, "Entregado");
+                    consulta2.setInt(3, Integer.parseInt(tbRegistro.getValueAt(i, 1).toString()));
+                    consulta2.executeUpdate();
+
                 } catch (SQLException ex) {
+                    System.out.printf("Error conexion tabla pedido \n");
                 }
             } else {
-                System.out.printf("No hace nada");
+                System.out.printf("No hace nada \n");
             }
         }
     }//GEN-LAST:event_btnDespacharPedidoActionPerformed
@@ -409,6 +583,499 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
         // TODO add your handling code here:
         this.setVisible(false);
     }//GEN-LAST:event_btnVolverActionPerformed
+
+    private void btnVerTodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerTodoActionPerformed
+        // TODO add your handling code here:
+        borrarTabla();
+        contador = 0;
+        int nroFilas = 0, codigo, stock = 0;
+        Conexion con = new Conexion();
+        Connection reg = con.obtenerConexion();
+        try {
+            PreparedStatement consulta2 = reg.prepareStatement("SELECT * FROM pedido");
+            ResultSet resultado2 = consulta2.executeQuery();
+            while (resultado2.next()) {
+                DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
+                modeloDeMiTabla.addRow(new Object[nroFilas]);
+                try {
+                    PreparedStatement consulta1 = reg.prepareStatement("SELECT * FROM registro");
+                    ResultSet resultado1 = consulta1.executeQuery();
+                    while (resultado1.next()) {
+                        if (resultado2.getString("medicamento").equals(resultado1.getString("nombre"))) {
+                            codigo = resultado1.getInt("id_registro");
+                            stock = resultado1.getInt("stock");
+                        }
+                    }
+                } catch (SQLException ex) {
+                }
+                tbRegistro.setValueAt(false, nroFilas, 0);
+                tbRegistro.setValueAt(resultado2.getInt("npedido"), nroFilas, 1);
+                tbRegistro.setValueAt(resultado2.getString("medicamento"), nroFilas, 2);
+                tbRegistro.setValueAt(resultado2.getInt("cantidad_requerida"), nroFilas, 3);
+                tbRegistro.setValueAt(resultado2.getString("medida"), nroFilas, 4);
+                tbRegistro.setValueAt(resultado2.getString("estado_entrega"), nroFilas, 5);
+                tbRegistro.setValueAt(resultado2.getString("fecha_solicitud"), nroFilas, 6);
+                tbRegistro.setValueAt(stock, nroFilas, 7);
+                tbRegistro.setValueAt(resultado2.getString("unidad"), nroFilas, 8);
+                tbRegistro.setValueAt(null, nroFilas, 9);
+                nroFilas++;
+                contador++;
+            }
+        } catch (SQLException ex) {
+        }
+    }//GEN-LAST:event_btnVerTodoActionPerformed
+
+    private void btnVerEntregadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerEntregadosActionPerformed
+        // TODO add your handling code here:
+        borrarTabla();
+        contador = 0;
+        int nroFilas = 0, codigo, stock = 0;
+        Conexion con = new Conexion();
+        Connection reg = con.obtenerConexion();
+        try {
+            PreparedStatement consulta2 = reg.prepareStatement("SELECT * FROM pedido");
+            ResultSet resultado2 = consulta2.executeQuery();
+            while (resultado2.next()) {
+                if (resultado2.getString("estado_entrega").equals("Entregado")) {
+                    DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
+                    modeloDeMiTabla.addRow(new Object[nroFilas]);
+                    try {
+                        PreparedStatement consulta1 = reg.prepareStatement("SELECT * FROM registro");
+                        ResultSet resultado1 = consulta1.executeQuery();
+                        while (resultado1.next()) {
+                            if (resultado2.getString("medicamento").equals(resultado1.getString("nombre"))) {
+                                codigo = resultado1.getInt("id_registro");
+                                stock = resultado1.getInt("stock");
+                            }
+                        }
+                    } catch (SQLException ex) {
+                    }
+                    tbRegistro.setValueAt(false, nroFilas, 0);
+                    tbRegistro.setValueAt(resultado2.getInt("npedido"), nroFilas, 1);
+                    tbRegistro.setValueAt(resultado2.getString("medicamento"), nroFilas, 2);
+                    tbRegistro.setValueAt(resultado2.getInt("cantidad_requerida"), nroFilas, 3);
+                    tbRegistro.setValueAt(resultado2.getString("medida"), nroFilas, 4);
+                    tbRegistro.setValueAt(resultado2.getString("estado_entrega"), nroFilas, 5);
+                    tbRegistro.setValueAt(resultado2.getString("fecha_solicitud"), nroFilas, 6);
+                    tbRegistro.setValueAt(stock, nroFilas, 7);
+                    tbRegistro.setValueAt(null, nroFilas, 9);
+                    tbRegistro.setValueAt(resultado2.getString("unidad"), nroFilas, 8);
+                    nroFilas++;
+                    contador++;
+                }
+            }
+        } catch (SQLException ex) {
+        }
+    }//GEN-LAST:event_btnVerEntregadosActionPerformed
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        // TODO add your handling code here:
+        borrarTabla();
+        contador = 0;
+        int nroFilas = 0, codigo, stock = 0;
+        Conexion con = new Conexion();
+        Connection reg = con.obtenerConexion();
+        try {
+            PreparedStatement consulta2 = reg.prepareStatement("SELECT * FROM pedido");
+            ResultSet resultado2 = consulta2.executeQuery();
+            while (resultado2.next()) {
+                if (resultado2.getString("estado_entrega").equals("Pendiente")) {
+                    DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
+                    modeloDeMiTabla.addRow(new Object[nroFilas]);
+                    try {
+                        PreparedStatement consulta1 = reg.prepareStatement("SELECT * FROM registro");
+                        ResultSet resultado1 = consulta1.executeQuery();
+                        while (resultado1.next()) {
+                            if (resultado2.getString("medicamento").equals(resultado1.getString("nombre"))) {
+                                codigo = resultado1.getInt("id_registro");
+                                stock = resultado1.getInt("stock");
+                            }
+                        }
+                    } catch (SQLException ex) {
+                    }
+                    tbRegistro.setValueAt(false, nroFilas, 0);
+                    tbRegistro.setValueAt(resultado2.getInt("npedido"), nroFilas, 1);
+                    tbRegistro.setValueAt(resultado2.getString("medicamento"), nroFilas, 2);
+                    tbRegistro.setValueAt(resultado2.getInt("cantidad_requerida"), nroFilas, 3);
+                    tbRegistro.setValueAt(resultado2.getString("medida"), nroFilas, 4);
+                    tbRegistro.setValueAt(resultado2.getString("estado_entrega"), nroFilas, 5);
+                    tbRegistro.setValueAt(resultado2.getString("fecha_solicitud"), nroFilas, 6);
+                    tbRegistro.setValueAt(stock, nroFilas, 7);
+                    tbRegistro.setValueAt(null, nroFilas, 9);
+                    tbRegistro.setValueAt(resultado2.getString("unidad"), nroFilas, 8);
+                    nroFilas++;
+                    contador++;
+                }
+            }
+        } catch (SQLException ex) {
+        }
+    }//GEN-LAST:event_btnActualizarActionPerformed
+
+    private void btnGenerarExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarExcelActionPerformed
+        // TODO add your handling code here:
+        int nroFilas = 0;
+        DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
+        modeloDeMiTabla.addRow(new Object[nroFilas]);
+        String a0, a1, a2, a3, a4, a5,a6;
+        HSSFCell celda;
+        HSSFRow fila;
+        HSSFRichTextString texto;
+
+        // Se crea el libro
+        HSSFWorkbook libro = new HSSFWorkbook();
+
+        // Se crea una hoja dentro del libro
+        HSSFSheet hoja = libro.createSheet();
+
+        fila = hoja.createRow(0);
+        celda = fila.createCell((short) 0);
+        texto = new HSSFRichTextString("Nº Pedido");
+        celda.setCellValue(texto);
+        celda = fila.createCell((short) 1);
+        texto = new HSSFRichTextString("Medicamento");
+        celda.setCellValue(texto);
+        celda = fila.createCell((short) 2);
+        texto = new HSSFRichTextString("Cantidad Solicitada");
+        celda.setCellValue(texto);
+        celda = fila.createCell((short) 3);
+        texto = new HSSFRichTextString("Medida");
+        celda.setCellValue(texto);
+        celda = fila.createCell((short) 4);
+        texto = new HSSFRichTextString("Estado entrega");
+        celda.setCellValue(texto);
+        celda = fila.createCell((short) 5);
+        texto = new HSSFRichTextString("Fecha solicitud");
+        celda.setCellValue(texto);
+        celda = fila.createCell((short) 6);
+        texto = new HSSFRichTextString("Unidad que solicita");
+        celda.setCellValue(texto);
+
+        for (nroFilas = 0; nroFilas < contadorTotal; nroFilas++) {
+            a0 = tbRegistro.getValueAt(nroFilas, 1).toString();
+            a1 = tbRegistro.getValueAt(nroFilas, 2).toString();
+            a2 = tbRegistro.getValueAt(nroFilas, 3).toString();
+            a3 = tbRegistro.getValueAt(nroFilas, 4).toString();
+            a4 = tbRegistro.getValueAt(nroFilas, 5).toString();
+            a5 = tbRegistro.getValueAt(nroFilas, 6).toString();
+            a6=tbRegistro.getValueAt(nroFilas, 8).toString();
+            // Se crea una fila dentro de la hoja
+            fila = hoja.createRow(nroFilas + 1);
+
+            // Se crea una celda dentro de la fila
+            celda = fila.createCell((short) 0);
+            // Se crea el contenido de la celda y se mete en ella.
+            texto = new HSSFRichTextString(a0);
+            celda.setCellValue(texto);
+            celda = fila.createCell((short) 1);
+            texto = new HSSFRichTextString(a1);
+            celda.setCellValue(texto);
+            celda = fila.createCell((short) 2);
+            texto = new HSSFRichTextString(a2);
+            celda.setCellValue(texto);
+            celda = fila.createCell((short) 3);
+            texto = new HSSFRichTextString(a3);
+            celda.setCellValue(texto);
+            celda = fila.createCell((short) 4);
+            texto = new HSSFRichTextString(a4);
+            celda.setCellValue(texto);
+            celda = fila.createCell((short) 5);
+            texto = new HSSFRichTextString(a5);
+            celda.setCellValue(texto);
+            celda = fila.createCell((short) 6);
+            texto = new HSSFRichTextString(a6);
+            celda.setCellValue(texto);
+
+        }
+
+        // Se salva el libro.
+        try {
+            FileOutputStream elFichero = new FileOutputStream("Registro de pedidos.xls");
+            libro.write(elFichero);
+            elFichero.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        JOptionPane.showMessageDialog(this, "Se ha guardado su Excel de manera correcta");
+        this.setVisible(false);
+    }//GEN-LAST:event_btnGenerarExcelActionPerformed
+
+    private void txtFechaAAFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFechaAAFocusGained
+        // TODO add your handling code here:
+        txtFechaAA.setText(null);
+        String vacio = "";
+        if (txtFechaMM.getText().equals(vacio)) {
+            txtFechaMM.setText("MM");
+        }
+        if (txtFechaDD.getText().equals(vacio)) {
+            txtFechaDD.setText("DD");
+        }
+    }//GEN-LAST:event_txtFechaAAFocusGained
+
+    private void txtFechaMMFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFechaMMFocusGained
+        // TODO add your handling code here:
+        txtFechaMM.setText(null);
+        String vacio = "";
+        if (txtFechaAA.getText().equals(vacio)) {
+            txtFechaAA.setText("AAAA");
+        }
+        if (txtFechaDD.getText().equals(vacio)) {
+            txtFechaDD.setText("DD");
+        }
+    }//GEN-LAST:event_txtFechaMMFocusGained
+
+    private void txtFechaDDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFechaDDFocusGained
+        // TODO add your handling code here:
+        txtFechaDD.setText(null);
+        txtFechaDD.setText(null);
+        String vacio = "";
+        if (txtFechaAA.getText().equals(vacio)) {
+            txtFechaAA.setText("AAAA");
+        }
+        if (txtFechaMM.getText().equals(vacio)) {
+            txtFechaMM.setText("MM");
+        }
+    }//GEN-LAST:event_txtFechaDDFocusGained
+
+    private void btnFechaActualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFechaActualActionPerformed
+        // TODO add your handling code here:
+        String[] fecha = fechaActual().split("/");
+        txtFechaDD.setText(fecha[0]);
+        txtFechaMM.setText(fecha[1]);
+        txtFechaAA.setText(fecha[2]);
+    }//GEN-LAST:event_btnFechaActualActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        // TODO add your handling code here:
+        /*
+         Tipos de busqueda:
+         Seleccione area de pedido
+         nº Pedido
+         Medicamento
+         Cantidad propuesta
+         Medida
+         Estado de solicitud
+         Fecha solicitud
+         */
+        borrarTabla();
+        Conexion con = new Conexion();
+        Connection reg = con.obtenerConexion();
+        String busqueda = (String) cmbBusqueda.getSelectedItem();
+        borrarTabla();
+        if (busqueda.equals("nº Pedido")) {
+            int nroFilas = 0, codigo, stock = 0;
+            try {
+                PreparedStatement consulta2 = reg.prepareStatement("SELECT * FROM pedido");
+                ResultSet resultado2 = consulta2.executeQuery();
+                while (resultado2.next()) {
+                    if (resultado2.getInt("npedido") == Integer.parseInt(txtBusqueda.getText())) {
+                        DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
+                        modeloDeMiTabla.addRow(new Object[nroFilas]);
+                        try {
+                            PreparedStatement consulta1 = reg.prepareStatement("SELECT * FROM registro");
+                            ResultSet resultado1 = consulta1.executeQuery();
+                            while (resultado1.next()) {
+                                if (resultado2.getString("medicamento").equals(resultado1.getString("nombre"))) {
+                                    codigo = resultado1.getInt("id_registro");
+                                    stock = resultado1.getInt("stock");
+                                }
+                            }
+                        } catch (SQLException ex) {
+                        }
+                        tbRegistro.setValueAt(false, nroFilas, 0);
+                        tbRegistro.setValueAt(resultado2.getInt("npedido"), nroFilas, 1);
+                        tbRegistro.setValueAt(resultado2.getString("medicamento"), nroFilas, 2);
+                        tbRegistro.setValueAt(resultado2.getInt("cantidad_requerida"), nroFilas, 3);
+                        tbRegistro.setValueAt(resultado2.getString("medida"), nroFilas, 4);
+                        tbRegistro.setValueAt(resultado2.getString("estado_entrega"), nroFilas, 5);
+                        tbRegistro.setValueAt(resultado2.getString("fecha_solicitud"), nroFilas, 6);
+                        tbRegistro.setValueAt(stock, nroFilas, 7);
+                        tbRegistro.setValueAt(null, nroFilas, 9);
+                        tbRegistro.setValueAt(resultado2.getString("unidad"), nroFilas, 8);
+                        nroFilas++;
+                        contador++;
+                        contadorTotal++;
+
+                    }
+                }
+            } catch (SQLException ex) {
+            }
+        } else {
+            if (busqueda.equals("Medicamento")) {
+                int nroFilas = 0, codigo, stock = 0;
+                try {
+                    PreparedStatement consulta2 = reg.prepareStatement("SELECT * FROM pedido");
+                    ResultSet resultado2 = consulta2.executeQuery();
+                    while (resultado2.next()) {
+                        if (resultado2.getString("medicamento").equals(txtBusqueda.getText())) {
+                            DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
+                            modeloDeMiTabla.addRow(new Object[nroFilas]);
+                            try {
+                                PreparedStatement consulta1 = reg.prepareStatement("SELECT * FROM registro");
+                                ResultSet resultado1 = consulta1.executeQuery();
+                                while (resultado1.next()) {
+                                    if (resultado2.getString("medicamento").equals(resultado1.getString("nombre"))) {
+                                        codigo = resultado1.getInt("id_registro");
+                                        stock = resultado1.getInt("stock");
+                                    }
+                                }
+                            } catch (SQLException ex) {
+                            }
+                            tbRegistro.setValueAt(false, nroFilas, 0);
+                            tbRegistro.setValueAt(resultado2.getInt("npedido"), nroFilas, 1);
+                            tbRegistro.setValueAt(resultado2.getString("medicamento"), nroFilas, 2);
+                            tbRegistro.setValueAt(resultado2.getInt("cantidad_requerida"), nroFilas, 3);
+                            tbRegistro.setValueAt(resultado2.getString("medida"), nroFilas, 4);
+                            tbRegistro.setValueAt(resultado2.getString("estado_entrega"), nroFilas, 5);
+                            tbRegistro.setValueAt(resultado2.getString("fecha_solicitud"), nroFilas, 6);
+                            tbRegistro.setValueAt(stock, nroFilas, 7);
+                            tbRegistro.setValueAt(null, nroFilas, 9);
+                            tbRegistro.setValueAt(resultado2.getString("unidad"), nroFilas, 8);
+                            nroFilas++;
+                            contador++;
+                            contadorTotal++;
+
+                        }
+                    }
+                } catch (SQLException ex) {
+                }
+            } else {
+                if (busqueda.equals("Fecha solicitud")) {
+                    int nroFilas = 0, codigo, stock = 0;
+                    try {
+                        PreparedStatement consulta2 = reg.prepareStatement("SELECT * FROM pedido");
+                        ResultSet resultado2 = consulta2.executeQuery();
+                        while (resultado2.next()) {
+                            if (resultado2.getString("fecha_solicitud").equals(txtFechaAA.getText() + "-" + txtFechaMM.getText() + "-" + txtFechaDD.getText())) {
+                                DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
+                                modeloDeMiTabla.addRow(new Object[nroFilas]);
+                                try {
+                                    PreparedStatement consulta1 = reg.prepareStatement("SELECT * FROM registro");
+                                    ResultSet resultado1 = consulta1.executeQuery();
+                                    while (resultado1.next()) {
+                                        if (resultado2.getString("medicamento").equals(resultado1.getString("nombre"))) {
+                                            codigo = resultado1.getInt("id_registro");
+                                            stock = resultado1.getInt("stock");
+                                        }
+                                    }
+                                } catch (SQLException ex) {
+                                }
+                                tbRegistro.setValueAt(false, nroFilas, 0);
+                                tbRegistro.setValueAt(resultado2.getInt("npedido"), nroFilas, 1);
+                                tbRegistro.setValueAt(resultado2.getString("medicamento"), nroFilas, 2);
+                                tbRegistro.setValueAt(resultado2.getInt("cantidad_requerida"), nroFilas, 3);
+                                tbRegistro.setValueAt(resultado2.getString("medida"), nroFilas, 4);
+                                tbRegistro.setValueAt(resultado2.getString("estado_entrega"), nroFilas, 5);
+                                tbRegistro.setValueAt(resultado2.getString("fecha_solicitud"), nroFilas, 6);
+                                tbRegistro.setValueAt(stock, nroFilas, 7);
+                                tbRegistro.setValueAt(null, nroFilas, 9);
+                                tbRegistro.setValueAt(resultado2.getString("unidad"), nroFilas, 8);
+                                nroFilas++;
+                                contador++;
+                                contadorTotal++;
+
+                            }
+                        }
+                    } catch (SQLException ex) {
+                    }
+                } else {
+                    if (busqueda.equals("Medida")) {
+                        int nroFilas = 0, codigo, stock = 0;
+                        try {
+                            PreparedStatement consulta2 = reg.prepareStatement("SELECT * FROM pedido");
+                            ResultSet resultado2 = consulta2.executeQuery();
+                            while (resultado2.next()) {
+                                if (resultado2.getString("medida").equals(txtBusqueda.getText())) {
+                                    DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
+                                    modeloDeMiTabla.addRow(new Object[nroFilas]);
+                                    try {
+                                        PreparedStatement consulta1 = reg.prepareStatement("SELECT * FROM registro");
+                                        ResultSet resultado1 = consulta1.executeQuery();
+                                        while (resultado1.next()) {
+                                            if (resultado2.getString("medicamento").equals(resultado1.getString("nombre"))) {
+                                                codigo = resultado1.getInt("id_registro");
+                                                stock = resultado1.getInt("stock");
+                                            }
+                                        }
+                                    } catch (SQLException ex) {
+                                    }
+                                    tbRegistro.setValueAt(false, nroFilas, 0);
+                                    tbRegistro.setValueAt(resultado2.getInt("npedido"), nroFilas, 1);
+                                    tbRegistro.setValueAt(resultado2.getString("medicamento"), nroFilas, 2);
+                                    tbRegistro.setValueAt(resultado2.getInt("cantidad_requerida"), nroFilas, 3);
+                                    tbRegistro.setValueAt(resultado2.getString("medida"), nroFilas, 4);
+                                    tbRegistro.setValueAt(resultado2.getString("estado_entrega"), nroFilas, 5);
+                                    tbRegistro.setValueAt(resultado2.getString("fecha_solicitud"), nroFilas, 6);
+                                    tbRegistro.setValueAt(stock, nroFilas, 7);
+                                    tbRegistro.setValueAt(resultado2.getString("unidad"), nroFilas, 8);
+                                    tbRegistro.setValueAt(null, nroFilas, 9);
+                                    nroFilas++;
+                                    contador++;
+                                    contadorTotal++;
+
+                                }
+                            }
+                        } catch (SQLException ex) {
+                        }
+                    } else {
+                        if (busqueda.equals("Estado de entrega")) {
+                            int nroFilas = 0, codigo, stock = 0;
+                            try {
+                                PreparedStatement consulta2 = reg.prepareStatement("SELECT * FROM pedido");
+                                ResultSet resultado2 = consulta2.executeQuery();
+                                while (resultado2.next()) {
+                                    if (resultado2.getString("estado_entrega").equals(txtBusqueda.getText())) {
+                                        DefaultTableModel modeloDeMiTabla = (DefaultTableModel) tbRegistro.getModel();
+                                        modeloDeMiTabla.addRow(new Object[nroFilas]);
+                                        try {
+                                            PreparedStatement consulta1 = reg.prepareStatement("SELECT * FROM registro");
+                                            ResultSet resultado1 = consulta1.executeQuery();
+                                            while (resultado1.next()) {
+                                                if (resultado2.getString("medicamento").equals(resultado1.getString("nombre"))) {
+                                                    codigo = resultado1.getInt("id_registro");
+                                                    stock = resultado1.getInt("stock");
+                                                }
+                                            }
+                                        } catch (SQLException ex) {
+                                        }
+                                        tbRegistro.setValueAt(false, nroFilas, 0);
+                                        tbRegistro.setValueAt(resultado2.getInt("npedido"), nroFilas, 1);
+                                        tbRegistro.setValueAt(resultado2.getString("medicamento"), nroFilas, 2);
+                                        tbRegistro.setValueAt(resultado2.getInt("cantidad_requerida"), nroFilas, 3);
+                                        tbRegistro.setValueAt(resultado2.getString("medida"), nroFilas, 4);
+                                        tbRegistro.setValueAt(resultado2.getString("estado_entrega"), nroFilas, 5);
+                                        tbRegistro.setValueAt(resultado2.getString("fecha_solicitud"), nroFilas, 6);
+                                        tbRegistro.setValueAt(stock, nroFilas, 7);
+                                        tbRegistro.setValueAt(resultado2.getString("unidad"), nroFilas, 8);
+                                        tbRegistro.setValueAt(null, nroFilas, 9);
+                                        nroFilas++;
+                                        contador++;
+                                        contadorTotal++;
+
+                                    }
+                                }
+                            } catch (SQLException ex) {
+                            }
+                        } else {
+
+                        }
+                    }
+
+                }
+
+            }
+        }
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void cmbBusquedaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cmbBusquedaFocusLost
+        // TODO add your handling code here:
+     String fecha = (String) cmbBusqueda.getSelectedItem();
+        if (fecha.equals("Fecha solicitud")) {
+            pnlFecha.setVisible(true);
+            txtFechaAA.requestFocus();
+        } else {
+            pnlFecha.setVisible(false);
+        }
+    }//GEN-LAST:event_cmbBusquedaFocusLost
 
     /**
      * @param args the command line arguments
@@ -455,17 +1122,26 @@ public class DlgRecibirPedidos extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnDespacharPedido;
+    private javax.swing.JButton btnFechaActual;
     private javax.swing.JButton btnGenerarExcel;
+    private javax.swing.JButton btnVerEntregados;
+    private javax.swing.JButton btnVerTodo;
     private javax.swing.JButton btnVolver;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox cmbBusqueda;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane7;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JPanel pnlFecha;
     private javax.swing.JTable tbRegistro;
+    private javax.swing.JTextField txtBusqueda;
+    private javax.swing.JTextField txtFechaAA;
+    private javax.swing.JTextField txtFechaDD;
+    private javax.swing.JTextField txtFechaMM;
     // End of variables declaration//GEN-END:variables
 }
