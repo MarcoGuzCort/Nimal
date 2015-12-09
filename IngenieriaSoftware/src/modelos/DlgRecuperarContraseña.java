@@ -191,18 +191,24 @@ public class DlgRecuperarContraseña extends javax.swing.JDialog {
          Conexion con = new Conexion();
         Connection reg = con.obtenerConexion();
         String contraseña="";
+        String aux = "";
         if(txtPregunta.getText().isEmpty()||txtRespuesta.getText().isEmpty()){JOptionPane.showMessageDialog(this,"Debe Ingresar datos","Error",JOptionPane.ERROR_MESSAGE);}else{
         try{
             PreparedStatement consulta = reg.prepareStatement("SELECT * FROM usuario");
             ResultSet resultado = consulta.executeQuery();
             while(resultado.next()){
             if(txtPregunta.getText().equals(resultado.getString("pregunta_seguridad"))){
+                aux = resultado.getString("respuesta_seguridad");
                 if(resultado.getString("respuesta_seguridad").equals(txtRespuesta.getText())){
                     contraseña=resultado.getString("contraseña");
+                    
                 }
-                
-            } }
+            }  } 
+            
+            
         }catch(SQLException ex){}}
+        if(txtRespuesta.getText().equals(aux)){}else{JOptionPane.showMessageDialog(this,"Respues de pregunta secreta incorrecta","Error",JOptionPane.ERROR_MESSAGE);
+        txtRespuesta.setText(null);}
         txtContraseña.setText(contraseña);
     }//GEN-LAST:event_btnBuscarContraseñaActionPerformed
 
