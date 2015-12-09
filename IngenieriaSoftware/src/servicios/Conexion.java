@@ -5,7 +5,7 @@ public class Conexion {
    public Connection obtenerConexion() {
          try {
             Class.forName("com.mysql.jdbc.Driver");
-            cnx = DriverManager.getConnection("jdbc:mysql://localhost/bodega_farmacia_inc","root","");
+            cnx= DriverManager.getConnection("jdbc:mysql://db4free.net:3306/bodega","nimal","changos12");
          } catch (ClassNotFoundException |SQLException e) {
              System.out.printf("error de conexion");
       }
