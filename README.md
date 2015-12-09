@@ -2,6 +2,8 @@
 
 ATENCION: Este software no tiene ninguna garantía si se utiliza en un lugar donde no se instalo por los responsables de este proyecto y los autores no se hacen responsables de los posibles perjuicios causados por su uso. Usted asume los riesgos del uso de este software.
 
+NOTA: Se han agregado los archivos derby.jar, derbyclient.jay, poi y mysqlconnector. Por si al compilar los requiere.
+
 Que es esta bodega_interna.jar?
 
 Este es un programa que se ha diseñado para organizar el sistemas de bodegas de un hospital de acuerdo a las demandas que existen en cada unidad, este en un programa multiplataforma de fácil uso.
